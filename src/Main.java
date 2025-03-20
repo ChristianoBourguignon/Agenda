@@ -6,7 +6,9 @@ public class Main {
         Agenda ctChristiano1 = new Agenda("Christiano", "1234");
         //Agenda.escrita(ctChristiano);
         //Agenda.escrita(ctChristiano1);
+        //Agenda.lerTodos();
+        //Agenda.lerContato(ctChristiano.getNome());
+        Agenda.alterarContato(ctChristiano.getNumero(), "256985");
         Agenda.lerTodos();
-        Agenda.lerContato(ctChristiano.getNome());
     }
 }

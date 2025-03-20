@@ -77,16 +77,35 @@ public class Agenda {
             throw new RuntimeException(e);
         }
     }
-    public static void alterar(Agenda agenda){
+    public static void alterarContato(String antNumero, String novoNumero){
         try {
-            FileWriter fw = new FileWriter("agenda.txt", true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(agenda.getNome()+";"+agenda.getNumero());
-            bw.newLine();
-            bw.close();
-            fw.close();
+            FileReader fr = new FileReader("agenda.txt");
+            BufferedReader br = new BufferedReader(fr);
+            boolean encontrado = false;
+            while(br.ready()){
+                String aux = br.readLine();
+                String[] dados = aux.split(";");
+                if (dados[1].equals(antNumero)){
+                    FileWriter fw = new FileWriter("agenda.txt", true);
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    bw.write(dados[0]+";"+ novoNumero);
+                    bw.close();
+                    fw.close();
+                }
+            }
+            if (!encontrado){
+                System.out.println("Não encontrado contato com esse numero: " + antNumero);
+            }
+            fr.close();
+            br.close();
+            //FileWriter fw = new FileWriter("agenda.txt", true);
+            //BufferedWriter bw = new BufferedWriter(fw);
+            //bw.write(agenda.getNome()+";"+agenda.getNumero());
+            //bw.newLine();
+            //bw.close();
+            //fw.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println(e);
         };
     };
 }
