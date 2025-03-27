@@ -1,8 +1,10 @@
 import java.io.*;
 
+
 public class Agenda {
     String nome;
     String numero;
+    String nomeAgenda;
 
     public Agenda(String nome, String numero) {
         this.nome = nome;
@@ -21,9 +23,9 @@ public class Agenda {
     public void setNumero(String numero){
         this.numero = numero;
     }
-    public static void escrita(Agenda agenda){
+    public static void escrita(Agenda agenda, String agendaNome){
         try {
-            FileWriter fw = new FileWriter("agenda.txt", true);
+            FileWriter fw = new FileWriter(agendaNome, true);
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(agenda.getNome()+";"+agenda.getNumero());
             bw.newLine();
@@ -40,7 +42,9 @@ public class Agenda {
             while(br.ready()){
                 String aux = br.readLine();
                 String [] dados = aux.split(";");
-                System.out.println("Nome: "+ dados[0] + " - Telefone: " + dados[1]);
+                if(dados.length>1) {
+                    System.out.println("Nome: " + dados[0] + " - Telefone: " + dados[1]);
+                }
             }
             br.close();
             fr.close();
@@ -58,12 +62,14 @@ public class Agenda {
             while(br.ready()) {
                 String aux = br.readLine();
                 String[] dados = aux.split(";");
-                if (dados[0].equals(nome)){
-                    if (!encontrado) {
-                        System.out.println("Encontrado os seguintes contatos com o nome: " + nome);
-                        encontrado = true;
+                if(dados.length>1){
+                    if (dados[0].equals(nome)){
+                        if (!encontrado) {
+                            System.out.println("Encontrado os seguintes contatos com o nome: " + nome);
+                            encontrado = true;
+                        }
+                        System.out.println("Nome: " + dados[0] + " - Telefone: " + dados[1]);
                     }
-                    System.out.println("Nome: " + dados[0] + " - Telefone: " + dados[1]);
                 }
             }
             if (!encontrado){
@@ -82,28 +88,42 @@ public class Agenda {
             FileReader fr = new FileReader("agenda.txt");
             BufferedReader br = new BufferedReader(fr);
             boolean encontrado = false;
+            FileWriter fw = new FileWriter("tempAgenda.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String nome = "";
             while(br.ready()){
                 String aux = br.readLine();
                 String[] dados = aux.split(";");
-                if (dados[1].equals(antNumero)){
-                    FileWriter fw = new FileWriter("agenda.txt", true);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    bw.write(dados[0]+";"+ novoNumero);
-                    bw.close();
-                    fw.close();
+                if (dados.length > 1) {
+                    if (dados[1].equals(antNumero)) {
+                        nome = dados[0];
+                        encontrado = true;
+                    } else {
+                        bw.write(dados[0] + ";" + dados[1]);
+                        bw.newLine();
+                    }
                 }
             }
-            if (!encontrado){
-                System.out.println("Não encontrado contato com esse numero: " + antNumero);
-            }
-            fr.close();
+            bw.close();
+            fw.close();
             br.close();
-            //FileWriter fw = new FileWriter("agenda.txt", true);
-            //BufferedWriter bw = new BufferedWriter(fw);
-            //bw.write(agenda.getNome()+";"+agenda.getNumero());
-            //bw.newLine();
-            //bw.close();
-            //fw.close();
+            fr.close();
+            if (encontrado){
+                Agenda ctCorrecao = new Agenda(nome,novoNumero);
+                Agenda.escrita(ctCorrecao,"tempAgenda.txt");
+                File tempAgenda = new File("tempAgenda.txt");
+                File agenda = new File("agenda.txt");
+                if (agenda.delete()) {
+                    if(!tempAgenda.renameTo(new File("agenda.txt"))) {
+                        System.out.println("Erro ao renomear arquivo!");
+                    } else {
+                        tempAgenda.renameTo(new File("agenda.txt"));
+                    }
+                } else {
+                    System.out.println("Arquivo de Agenda não deletado");
+                }
+            }
+
         } catch (IOException e) {
             System.out.println(e);
         };
