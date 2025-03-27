@@ -9,8 +9,9 @@ public class Main {
         //Agenda.lerTodos();
         //Agenda.lerContato(ctChristiano.getNome());
         Agenda.alterarContato(ctChristiano.getNumero(), "256985");
-        Agenda.lerTodos();
+        //Agenda.lerTodos();
         Agenda.alterarContato(ctChristiano1.getNumero(), "221585");
+        Agenda.excluirContato("221585");
         Agenda.lerTodos();
     }
 }

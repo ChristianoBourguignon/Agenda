@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Objects;
 
 
 public class Agenda {
@@ -17,11 +18,8 @@ public class Agenda {
     public String getNumero(){
         return this.numero;
     }
-    public void setNome(String nome){
-        this.nome = numero;
-    }
-    public void setNumero(String numero){
-        this.numero = numero;
+    public String setNumero(String numero){
+        return this.numero;
     }
     public static void escrita(Agenda agenda, String agendaNome){
         try {
@@ -123,6 +121,44 @@ public class Agenda {
                     System.out.println("Arquivo de Agenda não deletado");
                 }
             }
+
+        } catch (IOException e) {
+            System.out.println(e);
+        };
+    };
+    public static void excluirContato(String numero){
+        try {
+            FileReader fr = new FileReader("agenda.txt");
+            BufferedReader br = new BufferedReader(fr);
+            boolean encontrado = false;
+            FileWriter fw = new FileWriter("tempAgendaExcluir.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            while(br.ready()){
+                String aux = br.readLine();
+                String[] dados = aux.split(";");
+                if (dados.length > 1) {
+                    if (!dados[1].equals(numero)) {
+                        bw.write(dados[0] + ";" + dados[1]);
+                        bw.newLine();
+                    }
+                }
+            }
+            bw.close();
+            fw.close();
+            br.close();
+            fr.close();
+            File tempAgenda = new File("tempAgendaExcluir.txt");
+            File agenda = new File("agenda.txt");
+            if (agenda.delete()) {
+                if(!tempAgenda.renameTo(new File("agenda.txt"))) {
+                    System.out.println("Erro ao renomear arquivo!");
+                } else {
+                    tempAgenda.renameTo(new File("agenda.txt"));
+                }
+            } else {
+                System.out.println("Arquivo de Agenda não deletado");
+            }
+
 
         } catch (IOException e) {
             System.out.println(e);
